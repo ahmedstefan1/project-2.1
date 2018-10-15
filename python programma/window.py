@@ -4,7 +4,7 @@ class window:
     def __init__(self):
         root = Tk()
         frame = Frame(root)
-        frame.pack()
+        frame.grid()
 
 
         root.mainloop()
