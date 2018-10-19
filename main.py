@@ -10,14 +10,26 @@ class Window:
 
     def __init__(self, width=500, height=250):
         root = Tk()
+        root.title("project 2.1")
+
         frame = Frame(root, width=width, height=height)
         frame.grid(column=0, row=0, columnspan=1000, rowspan=1000)
 
-        button1 = Button(root, text="open blinds", command=self.openblinds)
-        button1.grid(column=900, row=900)
-        button2 = Button(root, text="close blinds", command=self.closeblinds)
-        button2.grid(column=900, row=850)
+        com_port = StringVar(root)
+        com_port_choices = ["3"]
+        com_port.set("no com port chosen")
+        dropdownmenu = OptionMenu(root, com_port, *com_port_choices)
+        dropdownmenu.grid(column=900, row=850)
 
+        connect = Button(root, text="open connection", command=self.openblinds)
+        connect.grid(column=900, row=900)
+
+        button2 = Button(root, text="open blinds", command=self.closeblinds)
+        button2.grid(column=900, row=100)
+        button2 = Button(root, text="close blinds", command=self.closeblinds)
+        button2.grid(column=900, row=200)
+
+        root.iconbitmap('windowicon.ico')
         root.mainloop()
 
 def main():
