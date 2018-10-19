@@ -1,10 +1,12 @@
 from tkinter import *
 from linker import *
 
+
 class Window:
 
     def openblinds(self):
         print("test1")
+
     def closeblinds(self):
         print("test2")
 
@@ -16,8 +18,13 @@ class Window:
         frame.grid(column=0, row=0, columnspan=1000, rowspan=1000)
 
         com_port = StringVar(root)
-        com_port_choices = ["3"]
-        com_port.set("no com port chosen")
+        com_port_choices = [get_com_ports()]
+        if com_port_choices[0] == "N/A":
+            com_port.set("N/A")
+        else:
+            com_port.set("none chosen")
+        print(len(com_port_choices))
+
         dropdownmenu = OptionMenu(root, com_port, *com_port_choices)
         dropdownmenu.grid(column=900, row=850)
 
@@ -31,6 +38,7 @@ class Window:
 
         root.iconbitmap('windowicon.ico')
         root.mainloop()
+
 
 def main():
     w = Window()
