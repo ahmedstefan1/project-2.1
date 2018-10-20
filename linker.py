@@ -19,6 +19,4 @@ def serial_connection(COM):
     connection = serial.Serial(COM, 192000)
     print(connection)
     connection.write(b"t")
-    while True:
-        text = connection.read()
-        print(text.hex())
+    connection.close()
