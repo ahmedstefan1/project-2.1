@@ -16,7 +16,8 @@ def get_com_ports():
 
 
 def serial_connection(COM):
-    connection = serial.Serial(COM, 192000)
+    connection = serial.Serial(COM, 19200)
     print(connection)
-    connection.write(b"t")
-    connection.close()
+    while True:
+        print(connection.read())
+
