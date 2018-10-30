@@ -15,9 +15,8 @@ def get_com_ports():
         return formatted_comports
 
 
-def serial_connection(COM):
-    connection = serial.Serial(COM, 19200)
+def serial_connection(com):
+    connection = serial.Serial(com, 19200)
     print(connection)
     while True:
         print(connection.read())
-

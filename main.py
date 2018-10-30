@@ -1,6 +1,11 @@
 from tkinter import *
 from linker import *
+from threading import *
 
+
+def background(func):
+    thread = Thread(target=func)
+    thread.start()
 
 class Window:
     com_port = None
@@ -17,8 +22,6 @@ class Window:
     def connect(self):
         global com_port
         choice = com_port.get()
-
-        print(choice)
         if choice is None or choice == "N/A" or choice == "none chosen":
             print("none selected")
         else:
@@ -50,7 +53,7 @@ class Window:
             dropdownmenu = OptionMenu(frame, com_port, *com_port_choices)
             dropdownmenu.grid(column=(amount_col-1), row=(amount_rows-1))
 
-            connect = Button(frame, text="open connection", command=self.connect)
+            connect = Button(frame, text="open connection", command=lambda: background(self.connect))
             connect.grid(column=(amount_col-1), row=(amount_rows-2))
 
         button3 = Button(frame, text="refresh, com_ports", command=self.refresh_comports)
