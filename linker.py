@@ -1,7 +1,7 @@
 import serial
 import serial.tools.list_ports as com_ports
 
-
+connection = serial.Serial()
 def get_com_ports():
     ports = list(com_ports.comports())
     formatted_comports = []
@@ -16,7 +16,27 @@ def get_com_ports():
 
 
 def serial_connection(com):
-    connection = serial.Serial(com, 19200)
+    global connection
+    connection.port(com)
+    connection.baudrate(19200)
     print(connection)
+
+
+def close_connection():
+    global connection
+    if connection.is_open:
+        connection.close()
+    else:
+        print("no connection is open")
+
+
+def read():
+    global connection
+    connection.open()
     while True:
-        print(connection.read())
+        print(hex(connection.read))
+
+
+def send(data):
+    global connection
+    connection.write(data)

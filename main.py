@@ -1,20 +1,22 @@
 from tkinter import *
 from linker import *
 from threading import *
+from math import *
+
+thread = None
 
 
 def background(func):
+    global thread
     thread = Thread(target=func)
     thread.start()
+
 
 class Window:
     com_port = None
 
     def openblinds(self):
         print("test1")
-
-    def closeblinds(self):
-        print("test2")
 
     def refresh_comports(self):
         print("refresh")
@@ -31,7 +33,7 @@ class Window:
             except:
                 print("connection failed")
 
-    def __init__(self, width=500, height=250, rows=10, columns=10):
+    def __init__(self, width=750, height=400, rows=100, columns=100):
         global com_port
         root = Tk()
         root.title("project 2.1")
@@ -51,19 +53,22 @@ class Window:
         else:
             com_port.set("none chosen")
             dropdownmenu = OptionMenu(frame, com_port, *com_port_choices)
-            dropdownmenu.grid(column=(amount_col-1), row=(amount_rows-1))
+            dropdownmenu.grid(column=(amount_col-ceil(amount_col*0.01)), row=(amount_rows-ceil(amount_rows*0.1)))
 
             connect = Button(frame, text="open connection", command=lambda: background(self.connect))
-            connect.grid(column=(amount_col-1), row=(amount_rows-2))
+            connect.grid(column=(amount_col-ceil(amount_col*0.01)), row=(amount_rows-ceil(amount_rows*0.2)))
 
         button3 = Button(frame, text="refresh, com_ports", command=self.refresh_comports)
-        button3.grid(column=(amount_col-1), row=(amount_rows-3))
+        button3.grid(column=(amount_col-ceil(amount_col*0.01)), row=(amount_rows-ceil(amount_rows*0.3)))
 
-        button2 = Button(frame, text="open blinds", command=self.closeblinds)
-        button2.grid(column=(amount_col-10), row=(amount_rows-8))
+        button2 = Button(frame, text="open blinds", command=self.openblinds)
+        button2.grid(column=(amount_col-ceil(amount_col*1)), row=(amount_rows-ceil(amount_rows*0.8)))
 
-        button2 = Button(frame, text="close blinds", command=self.closeblinds)
-        button2.grid(column=(amount_col-10), row=(amount_rows-9))
+        button2 = Button(frame, text="close connection", command=close_connection)
+        button2.grid(column=(amount_col-ceil(amount_col*0.01)), row=(amount_rows-ceil(amount_rows*0.2)))
+
+        canvas = Canvas(frame, width=ceil(width*0.8), height=ceil(height*0.8), bg='white')  # 0,0 is top left corner
+        canvas.grid(row=1, column=1, rowspan=ceil(amount_rows*0.8), columnspan=ceil(amount_col*0.8))
 
         for i in range(amount_col):
             frame.columnconfigure(i, weight=1)
