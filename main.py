@@ -13,7 +13,7 @@ class Window:
     def refresh_comports(self):
         print("refresh")
 
-    #
+    # zorgt ervoor dat de verbinding word opgesteld
     def connect(self):
         global com_port
         choice = com_port.get()
