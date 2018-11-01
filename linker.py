@@ -2,6 +2,9 @@ import serial
 import serial.tools.list_ports as com_ports
 
 connection = serial.Serial()
+
+
+# haalt op wat voor comports zijn aangesloten op de PC
 def get_com_ports():
     ports = list(com_ports.comports())
     formatted_comports = []
@@ -15,13 +18,14 @@ def get_com_ports():
         return formatted_comports
 
 
+# maakt de seriele connectie
 def serial_connection(com):
     global connection
-    connection.port(com)
-    connection.baudrate(19200)
+    connection = serial.Serial(com, 19200)
     print(connection)
+    readlines()
 
-
+# sluit de seriële connectie
 def close_connection():
     global connection
     if connection.is_open:
@@ -29,14 +33,14 @@ def close_connection():
     else:
         print("no connection is open")
 
-
-def read():
+# leest de wat de arduino verstuurt
+def readlines():
     global connection
-    connection.open()
     while True:
-        print(hex(connection.read))
+        x = connection.read()
+        print(x)
 
-
-def send(data):
+# hoort characters te versturen
+def send(data=hex(237)):
     global connection
     connection.write(data)
