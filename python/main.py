@@ -22,10 +22,6 @@ class Window:
         else:
             choice = choice[2:6]
             serial_connection(choice)
-            try:
-                serial_connection(choice)
-            except:
-                print("connection failed")
 
     def __init__(self, width=750, height=400, rows=100, columns=100):
         global com_port
@@ -53,7 +49,7 @@ class Window:
 
         # maakt alle knoppen
         connect = Button(frame, text="open connection", command=lambda: background(self.connect))
-        closeconn = Button(frame, text="close connection", command=close_connection)
+        closeconn = Button(frame, text="close connection", command=lambda: add_task(close_connection))
         refresh = Button(frame, text="refresh, com_ports", command=self.refresh_comports)
         openblinds = Button(frame, text="open blinds", command=self.openblinds)
         closeblinds = Button(frame, text="close blinds", command=self.openblinds)
@@ -66,14 +62,14 @@ class Window:
         closeblinds.grid(column=95, row=81)
 
         # maakt de canvassen
-        canvas1 = Canvas(frame, width=ceil(width*0.1), height=ceil(height*0.2), bg='blue')
-        canvas2 = Canvas(frame, width=ceil(width*0.1), height=ceil(height*0.2), bg='red')
-        canvas3 = Canvas(frame, width=ceil(width*0.1), height=ceil(height*0.2), bg='green')
+        canvas1 = Canvas(frame, width=ceil(width*0.1), height=ceil(height*0.3), bg='blue')
+        canvas2 = Canvas(frame, width=ceil(width*0.1), height=ceil(height*0.3), bg='red')
+        canvas3 = Canvas(frame, width=ceil(width*0.1), height=ceil(height*0.3), bg='green')
 
         # plaats de canvassen
-        canvas1.grid(row=1, column=1, rowspan=ceil(rows * 0.8), columnspan=ceil(columns * 0.8))
-        canvas2.grid(row=1, column=1, rowspan=ceil(rows * 0.8), columnspan=ceil(columns * 0.8))
-        canvas3.grid(row=1, column=1, rowspan=ceil(rows*0.8), columnspan=ceil(columns*0.8))
+        canvas1.grid(row=70, column=1)
+        canvas2.grid(row=70, column=2)
+        canvas3.grid(row=70, column=3)
 
         # zorgt voor het automatisch scalen van alle rows en colommen
         for i in range(columns):

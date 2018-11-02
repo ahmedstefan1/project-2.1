@@ -8,6 +8,8 @@ from time import *
 
 connection = serial.Serial()
 s = scheduler(time, sleep)
+ranonce = False
+
 
 
 # haalt op wat voor comports zijn aangesloten op de PC
@@ -29,24 +31,31 @@ def serial_connection(com):
     global connection
     connection = serial.Serial(com, 19200)
     print(connection)
-    getpacket()
+    add_task()
 
 
 # sluit de seriële connectie
 def close_connection():
     global connection
-    if connection.is_open:
+    for task in s.queue:
+        s.cancel(task)
+
+    print(s.empty())
+    if connection.is_open and s.empty():
         connection.close()
     else:
         print("no connection is open")
+    add_task(end_thread,None,4)
 
 
 # leest de wat de arduino verstuurt
 def getpacket():
     global connection
-    while True:
-        x = connection.readline()
-        backgroundarg(protocol_understanding, (binascii.hexlify(x),))
+    x = connection.readline()
+    try:
+        protocol_understanding(binascii.hexlify(x))
+    except:
+        print("guess what again")
 
 
 # hoort characters te versturen
@@ -55,14 +64,23 @@ def sendpacket(data=hex(237)):
     connection.write(data)
 
 
-def add_task(task= getpacket, args=None):
-    if task == getpacket:
-        s.enter(0.1, 1, task)
-    else:
-        s.enter(0.1, 1, task, argument=args)
+def addself():
     s.enter(0.2, 2, add_task)
-    s.run()
+    s.enter(0.3, 3, addself)
 
+
+# adds tasks
+def add_task(task=getpacket, args=None , priority= 2):
+    # als er geen argumenten zijn gegeven hoeven die niet erbij
+    if not ranonce:
+        addself()
+    if args is None:
+        s.enter(0.1, priority, task)
+    else:
+        s.enter(0.1, priority, task, argument=args)
+    # zorgt ervoor dat deze taak zichzelf oproept zodat je niet alleen 1 keer de getpackets uitvoert
+    # voert de taken uit
+    s.run()
 
 
 # understands the protocol and checks for mistakes
