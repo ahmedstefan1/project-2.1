@@ -1,9 +1,13 @@
 import serial
 import serial.tools.list_ports as com_ports
 import binascii
-from Thread_management import *
+from python.performance_management import *
+from sched import *
+from time import *
+
 
 connection = serial.Serial()
+s = scheduler(time, sleep)
 
 
 # haalt op wat voor comports zijn aangesloten op de PC
@@ -27,6 +31,7 @@ def serial_connection(com):
     print(connection)
     getpacket()
 
+
 # sluit de seriële connectie
 def close_connection():
     global connection
@@ -34,6 +39,7 @@ def close_connection():
         connection.close()
     else:
         print("no connection is open")
+
 
 # leest de wat de arduino verstuurt
 def getpacket():
@@ -47,6 +53,16 @@ def getpacket():
 def sendpacket(data=hex(237)):
     global connection
     connection.write(data)
+
+
+def add_task(task= getpacket, args=None):
+    if task == getpacket:
+        s.enter(0.1, 1, task)
+    else:
+        s.enter(0.1, 1, task, argument=args)
+    s.enter(0.2, 2, add_task)
+    s.run()
+
 
 
 # understands the protocol and checks for mistakes
@@ -70,6 +86,14 @@ def protocol_understanding(data):
             # print de waarde van de sensor naar de console
             print("temperatuur:" + str(int(waarde, 16)) + u'\u00B0' + "C")
         # elif sensor =
+            # print("temperatuur:" + str(int(waarde, 16)) + u'\u00B0' + "C")
         # elif sensor =
+            # print("temperatuur:" + str(int(waarde, 16)) + u'\u00B0' + "C")
         # elif sensor =
+            # print("temperatuur:" + str(int(waarde, 16)) + u'\u00B0' + "C")
+        else:
+            print("something went wrong")
+
+    else:
+        print("didnt pass check")
 

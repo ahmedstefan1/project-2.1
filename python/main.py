@@ -1,6 +1,6 @@
 from tkinter import *
-from linker import *
-from Thread_management import *
+from python.linker import *
+from python.performance_management import *
 from math import *
 
 
@@ -82,7 +82,7 @@ class Window:
             frame.rowconfigure(j, weight=1)
 
         # zorgt voor mooi icoontje links bovenin
-        root.iconbitmap('windowicon.ico')
+        root.iconbitmap('./python/windowicon.ico')
 
         root.mainloop()
 

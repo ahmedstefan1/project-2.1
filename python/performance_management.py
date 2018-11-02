@@ -6,6 +6,7 @@ def background(func):
     thread = Thread(target=func)
     thread.start()
 
+
 def backgroundarg(func, arg):
     global thread
     thread = Thread(target=func, args=arg)
