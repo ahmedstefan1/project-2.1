@@ -36,10 +36,8 @@ def serial_connection(com):
 def close_connection():
     global connection
     for task in s.queue:
-        # TODO make the currently running task finish and remove the rest
         s.cancel(task)
 
-    print(s.empty())
     if connection.is_open and s.empty():
         connection.close()
     else:
@@ -70,8 +68,8 @@ def addself():
 # adds tasks
 def add_task(task=getpacket, args=None, priority=2):
     # als er geen argumenten zijn gegeven hoeven die niet erbij
-    # TODO check how often reading data is in the queue and how often adding yourself is in the queue
-    # TODO make sure that adding itsself is in there max 1-2 times and reading is in there max 3-5 times
+    # TODO check how often reading data is in the queue and how often adding yourself is in the queue?
+    # TODO make sure that adding itsself is in there max 1-2 times and reading is in there max 3-5 times?
     if not ranonce:
         addself()
     if args is None:

@@ -12,5 +12,3 @@ def backgroundarg(func, arg):
     global thread
     thread = Thread(target=func, args=arg)
     thread.start()
-
-

@@ -24,7 +24,7 @@ class Window:
             serial_connection(choice)
 
     def close(self):
-        add_task(close_connection)
+        add_task(close_connection, args=None, priority=1)
 
     def __init__(self, width=750, height=400, rows=100, columns=100):
         global com_port
