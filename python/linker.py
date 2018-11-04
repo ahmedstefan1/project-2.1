@@ -109,26 +109,28 @@ def protocol_understanding(data):
     sliced_data = data[0:4]
 
     # puts the data in different variables
-    sensor = sliced_data[0:1]
+    type_data = sliced_data[0:1]
     waarde = sliced_data[1:3]
     check = sliced_data[3:4]
     # xors the front part of the data with the back part, er is wat omrekenen nodig
     # Xor werkt alleen met Int en niet met hexadecimalen
     u1 = int(waarde[0:1], 16) ^ int(waarde[1:2], 16)
-    # xors de data van de sensor met uitkomst1 (u1)
-    u2 = u1 ^ int(sensor, 16)
+    # xors de data van de type_data met uitkomst1 (u1)
+    u2 = u1 ^ int(type_data, 16)
     # kijkt of die waarden overeen komen ( als ze niet overeen komen is er waarschijnlijk ergens een fout ontstaan
     if u2 == int(check, 16):
-        # welke sensor komt het uit
-        if sensor == b'8':
-            # print de waarde van de sensor naar de console
+        # welke type_data komt het uit
+        if type_data == b'8':
+            # print de waarde van de type_data naar de console
             print("temperatuur:" + str(int(waarde, 16)) + u'\u00B0' + "C")
-        # elif sensor ==
-            # print("sensor:" + str(int(waarde, 16)) + "eenheid")
-        # elif sensor ==
-            # print("sensor:" + str(int(waarde, 16)) + "eenheid")
-        # elif sensor ==
-            # print("sensor:" + str(int(waarde, 16)) + "eenheid")
+        # elif type_data ==
+            # print("type_data:" + str(int(waarde, 16)) + "eenheid")
+        # elif type_data ==
+            # print("type_data:" + str(int(waarde, 16)) + "eenheid")
+        # elif type_data ==
+            # print("type_data:" + str(int(waarde, 16)) + "eenheid")
+        # elif type_data ==
+            # print("type_data:" + str(int(waarde, 16)) + "eenheid")
         else:
             print("something went wrong")
             print(data)
