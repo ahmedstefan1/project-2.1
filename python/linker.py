@@ -8,6 +8,7 @@ from time import *
 connection = serial.Serial()
 s = scheduler(time, sleep)
 ran_once = False
+used_com = None
 
 
 # haalt op wat voor comports zijn aangesloten op de PC
@@ -24,7 +25,8 @@ def get_com_ports():
 
 # maakt de seriele connectie
 def serial_connection(com):
-    global connection
+    global connection, used_com
+    used_com = com
     connection = serial.Serial(com, 19200)
     print(connection)
     add_task()
@@ -62,15 +64,22 @@ def getpacket():
         print(x)
 
 
+# resets connection
+def reset():
+    global ran_once, used_com
+    ran_once = False
+    close_connection()
+    serial_connection(used_com)
+
+
 # hoort characters te versturen
 def sendpacket(data=None):
-    global connection, ran_once
+    global connection
     clean_queue()
     print("came here")
     print(data)
     connection.write(data)
-    ran_once = False
-    add_task()
+    reset()
 
 
 def addself():
@@ -86,9 +95,9 @@ def add_task(task=getpacket, priority=3, args=None):
     if not ran_once:
         addself()
     if args is None:
-        s.enter(0.1, priority, task)
+        s.enter(0.2, priority, task)
     else:
-        s.enter(0.1, priority, task, argument=args)
+        s.enter(0.2, priority, task, argument=args)
     # zorgt ervoor dat deze taak zichzelf oproept zodat je niet alleen 1 keer de getpackets uitvoert
     # voert de taken uit
     s.run()
