@@ -27,7 +27,7 @@ class Window:
         add_task(close_connection, args=None, priority=1)
 
     def __init__(self, width=750, height=400, rows=100, columns=100):
-        global com_port
+
         root = Tk()
         # geeft een titel aan de window
         root.title("project 2.1")
@@ -39,21 +39,25 @@ class Window:
         frame = Frame(root, width=width, height=height)
         frame.grid(column=0, row=0, rowspan=rows, columnspan=columns, sticky=(N, S, E, W))
 
-        # maakt de com_port een stringvar in de root
-        com_port = StringVar(root)
-        # haalt alle compoorten op vanuit de functie get_com_ports in de linker.py en zet ze in een lijst
-        com_port_choices = [get_com_ports()]
-        # zet de default waarde voor de lijst
-        com_port.set(com_port_choices[0])
-        # maakt de dropdown menu waar je de compoorten kunt uitkiezen
-        dropdownmenu = OptionMenu(frame, com_port, *com_port_choices)
-        # plaats de dropdown menu in de grid
-        dropdownmenu.grid(column=95, row=10)
+        def dropdown_menu():
+            global com_port
+            # maakt de com_port een stringvar in de root
+            com_port = StringVar(root)
+            # haalt alle compoorten op vanuit de functie get_com_ports in de linker.py en zet ze in een lijst
+            com_port_choices = [get_com_ports()]
+            # zet de default waarde voor de lijst
+            com_port.set(com_port_choices[0])
+            # maakt de dropdown menu waar je de compoorten kunt uitkiezen
+            dropdownmenu = OptionMenu(frame, com_port, *com_port_choices)
 
+            # plaats de dropdown menu in de grid
+            dropdownmenu.grid(column=95, row=10, sticky="ew")
+
+        dropdown_menu()
         # maakt alle knoppen
         connect = Button(frame, text="open connection", command=lambda: background(self.connect))
         closeconn = Button(frame, text="close connection", command=lambda: add_task(self.close))
-        refresh = Button(frame, text="refresh com ports", command=self.refresh_comports)
+        refresh = Button(frame, text="refresh com ports", command=dropdown_menu)
         openblinds = Button(frame, text="open blinds", command=self.openblinds)
         closeblinds = Button(frame, text="close blinds", command=self.openblinds)
 
@@ -88,7 +92,7 @@ class Window:
 
 def main():
     # maakt een object window
-    w = Window()
+    Window()
 
 
 if __name__ == '__main__':
