@@ -55,7 +55,7 @@ class Window:
             dropdownmenu = OptionMenu(frame, com_port, *com_port_choices)
 
             # plaats de dropdown menu in de grid
-            dropdownmenu.grid(column=95, row=10, sticky="ew")
+            dropdownmenu.grid(column=95, row=10, sticky="E,W")
 
         def close():
             add_task(close_connection, args=None, priority=1)
@@ -71,11 +71,11 @@ class Window:
         closeblinds = Button(frame, text="close blinds", command=self.openblinds)
 
         # plaatst alle knoppen in de grid
-        refresh.grid(column=95, row=9)
-        connect.grid(column=95, row=11)
-        closeconn.grid(column=95, row=12)
-        openblinds.grid(column=95, row=80)
-        closeblinds.grid(column=95, row=81)
+        refresh.grid(column=95, row=9, sticky="E,W")
+        connect.grid(column=95, row=11, sticky="E,W")
+        closeconn.grid(column=95, row=12, sticky="E,W")
+        openblinds.grid(column=95, row=80, sticky="E,W")
+        closeblinds.grid(column=95, row=81, sticky="E,W")
 
         # maakt de canvassen
         canvas1 = Canvas(frame, width=ceil(width*0.1), height=ceil(height*0.3), bg='blue')
