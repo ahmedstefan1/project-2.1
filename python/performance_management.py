@@ -14,6 +14,3 @@ def backgroundarg(func, arg):
     thread.start()
 
 
-def end_thread():
-    this_thread = current_thread()
-    this_thread.join()

@@ -23,6 +23,9 @@ class Window:
             choice = choice[2:6]
             serial_connection(choice)
 
+    def close(self):
+        add_task(close_connection)
+
     def __init__(self, width=750, height=400, rows=100, columns=100):
         global com_port
         root = Tk()
@@ -49,8 +52,8 @@ class Window:
 
         # maakt alle knoppen
         connect = Button(frame, text="open connection", command=lambda: background(self.connect))
-        closeconn = Button(frame, text="close connection", command=lambda: add_task(close_connection))
-        refresh = Button(frame, text="refresh, com_ports", command=self.refresh_comports)
+        closeconn = Button(frame, text="close connection", command=lambda: add_task(self.close))
+        refresh = Button(frame, text="refresh com ports", command=self.refresh_comports)
         openblinds = Button(frame, text="open blinds", command=self.openblinds)
         closeblinds = Button(frame, text="close blinds", command=self.openblinds)
 

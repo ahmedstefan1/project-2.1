@@ -1,7 +1,6 @@
 import serial
 import serial.tools.list_ports as com_ports
 import binascii
-from python.performance_management import *
 from sched import *
 from time import *
 
@@ -9,7 +8,6 @@ from time import *
 connection = serial.Serial()
 s = scheduler(time, sleep)
 ranonce = False
-
 
 
 # haalt op wat voor comports zijn aangesloten op de PC
@@ -38,6 +36,7 @@ def serial_connection(com):
 def close_connection():
     global connection
     for task in s.queue:
+        # TODO make the currently running task finish and remove the rest
         s.cancel(task)
 
     print(s.empty())
@@ -45,7 +44,6 @@ def close_connection():
         connection.close()
     else:
         print("no connection is open")
-    add_task(end_thread,None,4)
 
 
 # leest de wat de arduino verstuurt
@@ -66,12 +64,14 @@ def sendpacket(data=hex(237)):
 
 def addself():
     s.enter(0.2, 2, add_task)
-    s.enter(0.3, 3, addself)
+    s.enter(1, 4, addself)
 
 
 # adds tasks
-def add_task(task=getpacket, args=None , priority= 2):
+def add_task(task=getpacket, args=None, priority=2):
     # als er geen argumenten zijn gegeven hoeven die niet erbij
+    # TODO check how often reading data is in the queue and how often adding yourself is in the queue
+    # TODO make sure that adding itsself is in there max 1-2 times and reading is in there max 3-5 times
     if not ranonce:
         addself()
     if args is None:
@@ -94,21 +94,21 @@ def protocol_understanding(data):
     check = sliced_data[3:4]
     # xors the front part of the data with the back part, er is wat omrekenen nodig
     # Xor werkt alleen met Int en niet met hexadecimalen
-    U1 = int(waarde[0:1], 16) ^ int(waarde[1:2], 16)
-    # xors de data van de sensor met uitkomst1 (U1)
-    U2 = U1 ^ int(sensor, 16)
+    u1 = int(waarde[0:1], 16) ^ int(waarde[1:2], 16)
+    # xors de data van de sensor met uitkomst1 (u1)
+    u2 = u1 ^ int(sensor, 16)
     # kijkt of die waarden overeen komen ( als ze niet overeen komen is er waarschijnlijk ergens een fout ontstaan
-    if U2 == int(check, 16):
+    if u2 == int(check, 16):
         # welke sensor komt het uit
         if sensor == b'8':
             # print de waarde van de sensor naar de console
             print("temperatuur:" + str(int(waarde, 16)) + u'\u00B0' + "C")
-        # elif sensor =
-            # print("temperatuur:" + str(int(waarde, 16)) + u'\u00B0' + "C")
-        # elif sensor =
-            # print("temperatuur:" + str(int(waarde, 16)) + u'\u00B0' + "C")
-        # elif sensor =
-            # print("temperatuur:" + str(int(waarde, 16)) + u'\u00B0' + "C")
+        # elif sensor ==
+            # print("sensor:" + str(int(waarde, 16)) + "eenheid")
+        # elif sensor ==
+            # print("sensor:" + str(int(waarde, 16)) + "eenheid")
+        # elif sensor ==
+            # print("sensor:" + str(int(waarde, 16)) + "eenheid")
         else:
             print("something went wrong")
 
