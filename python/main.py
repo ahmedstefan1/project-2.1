@@ -6,28 +6,27 @@ from math import *
 
 class Window:
     com_port = None
+    connection_label = Label
 
     def openblinds(self):
         print("test1")
 
-    def refresh_comports(self):
-        print("refresh")
-
     # zorgt ervoor dat de verbinding word opgesteld
     def connect(self):
-        global com_port
+        global com_port, connection_label
         choice = com_port.get()
         if choice is None or choice == "N/A" or choice == "none chosen":
             print("none selected")
         else:
             choice = choice[2:6]
-            serial_connection(choice)
-
-    def close(self):
-        add_task(close_connection, args=None, priority=1)
+            try:
+                connection_label.config(text="connection: connected")
+                serial_connection(choice)
+            except:
+                connection_label.config(text="connection: failed")
 
     def __init__(self, width=750, height=400, rows=100, columns=100):
-
+        global connection_label
         root = Tk()
         # geeft een titel aan de window
         root.title("project 2.1")
@@ -36,9 +35,14 @@ class Window:
         root.columnconfigure(0, weight=1)
         root.rowconfigure(0, weight=1)
 
+        # makes frame waar alle elementen in komen
         frame = Frame(root, width=width, height=height)
         frame.grid(column=0, row=0, rowspan=rows, columnspan=columns, sticky=(N, S, E, W))
 
+        connection_label = Label(frame, text="connection:")
+        connection_label.grid(column=1, row=8)
+
+        # creates the dropdown menu for the comports selecter, if it needs  to be updated this does that too
         def dropdown_menu():
             global com_port
             # maakt de com_port een stringvar in de root
@@ -53,18 +57,23 @@ class Window:
             # plaats de dropdown menu in de grid
             dropdownmenu.grid(column=95, row=10, sticky="ew")
 
+        def close():
+            add_task(close_connection, args=None, priority=1)
+            connection_label.config(text="connection: closed")
+
         dropdown_menu()
+
         # maakt alle knoppen
         connect = Button(frame, text="open connection", command=lambda: background(self.connect))
-        closeconn = Button(frame, text="close connection", command=lambda: add_task(self.close))
+        closeconn = Button(frame, text="close connection", command=lambda: add_task(close))
         refresh = Button(frame, text="refresh com ports", command=dropdown_menu)
         openblinds = Button(frame, text="open blinds", command=self.openblinds)
         closeblinds = Button(frame, text="close blinds", command=self.openblinds)
 
         # plaatst alle knoppen in de grid
+        refresh.grid(column=95, row=9)
         connect.grid(column=95, row=11)
         closeconn.grid(column=95, row=12)
-        refresh.grid(column=95, row=9)
         openblinds.grid(column=95, row=80)
         closeblinds.grid(column=95, row=81)
 
@@ -73,10 +82,15 @@ class Window:
         canvas2 = Canvas(frame, width=ceil(width*0.1), height=ceil(height*0.3), bg='red')
         canvas3 = Canvas(frame, width=ceil(width*0.1), height=ceil(height*0.3), bg='green')
 
+        ledstatus = Canvas(frame, width=20, height=20)
+        ledstatus.create_oval(2, 2, 20, 20, fill="black")
+
+
         # plaats de canvassen
-        canvas1.grid(row=70, column=1)
-        canvas2.grid(row=70, column=2)
-        canvas3.grid(row=70, column=3)
+        canvas1.grid(column=2, row=70, sticky="N,S,E,W")
+        canvas2.grid(column=3, row=70, sticky="N,S,E,W")
+        canvas3.grid(column=4, row=70, sticky="N,S,E,W")
+        ledstatus.grid(column=1, row=9, sticky="N,S,E,W")
 
         # zorgt voor het automatisch scalen van alle rows en colommen
         for i in range(columns):
@@ -91,7 +105,7 @@ class Window:
 
 
 def main():
-    # maakt een object window
+    # maakt het object window
     Window()
 
 
