@@ -8,8 +8,13 @@ class Window:
     com_port = None
     connection_label = Label
 
-    def openblinds(self):
-        print("test1")
+    def open_blinds(self):
+        close_blinds_command = bytes.fromhex("A01B0A")
+        add_task(sendpacket, args=(close_blinds_command,), priority=2)
+
+    def close_blinds(self):
+        open_blinds_command = bytes.fromhex("A0280A")
+        add_task(sendpacket, args=(open_blinds_command,), priority=2)
 
     # zorgt ervoor dat de verbinding word opgesteld
     def connect(self):
@@ -24,6 +29,7 @@ class Window:
                 serial_connection(choice)
             except:
                 connection_label.config(text="connection: failed")
+                clean_queue()
 
     def __init__(self, width=750, height=400, rows=100, columns=100):
         global connection_label
@@ -67,8 +73,8 @@ class Window:
         connect = Button(frame, text="open connection", command=lambda: background(self.connect))
         closeconn = Button(frame, text="close connection", command=lambda: add_task(close))
         refresh = Button(frame, text="refresh com ports", command=dropdown_menu)
-        openblinds = Button(frame, text="open blinds", command=self.openblinds)
-        closeblinds = Button(frame, text="close blinds", command=self.openblinds)
+        openblinds = Button(frame, text="open blinds", command=lambda: background(self.open_blinds))
+        closeblinds = Button(frame, text="close blinds", command=lambda: background(self.close_blinds))
 
         # plaatst alle knoppen in de grid
         refresh.grid(column=95, row=9, sticky="E,W")

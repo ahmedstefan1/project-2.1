@@ -7,7 +7,7 @@ from time import *
 
 connection = serial.Serial()
 s = scheduler(time, sleep)
-ranonce = False
+ran_once = False
 
 
 # haalt op wat voor comports zijn aangesloten op de PC
@@ -30,11 +30,20 @@ def serial_connection(com):
     add_task()
 
 
+def clean_queue():
+    try:
+        for task in s.queue:
+            s.cancel(task)
+        print("queue empty?:" + s.empty())
+    except:
+        print(s.queue)
+        print("empty")
+
+
 # sluit de seriële connectie
 def close_connection():
     global connection
-    for task in s.queue:
-        s.cancel(task)
+    clean_queue()
 
     if connection.is_open and s.empty():
         connection.close()
@@ -50,25 +59,31 @@ def getpacket():
         protocol_understanding(binascii.hexlify(x))
     except:
         print("guess what again")
+        print(x)
 
 
 # hoort characters te versturen
-def sendpacket(data=hex(237)):
-    global connection
+def sendpacket(data=None):
+    global connection, ran_once
+    clean_queue()
+    print("came here")
+    print(data)
     connection.write(data)
+    ran_once = False
+    add_task()
 
 
 def addself():
-    s.enter(0.2, 2, add_task)
+    s.enter(0.2, 3, add_task)
     s.enter(1, 4, addself)
 
 
 # adds tasks
-def add_task(task=getpacket, args=None, priority=2):
+def add_task(task=getpacket, priority=3, args=None):
     # als er geen argumenten zijn gegeven hoeven die niet erbij
     # TODO check how often reading data is in the queue and how often adding yourself is in the queue?
     # TODO make sure that adding itsself is in there max 1-2 times and reading is in there max 3-5 times?
-    if not ranonce:
+    if not ran_once:
         addself()
     if args is None:
         s.enter(0.1, priority, task)
@@ -107,7 +122,9 @@ def protocol_understanding(data):
             # print("sensor:" + str(int(waarde, 16)) + "eenheid")
         else:
             print("something went wrong")
+            print(data)
 
     else:
         print("didnt pass check")
+        print(data)
 
