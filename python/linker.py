@@ -1,7 +1,6 @@
 import serial
 import serial.tools.list_ports as com_ports
 import binascii
-import python.main
 from sched import *
 from time import *
 
@@ -31,7 +30,6 @@ def serial_connection(com):
     global connection, used_com
     used_com = com
     connection = serial.Serial(com, 19200)
-    print(connection)
     add_task()
 
 
@@ -39,10 +37,8 @@ def clean_queue():
     try:
         for task in s.queue:
             s.cancel(task)
-        print("queue empty?:" + s.empty())
     except:
-        print(s.queue)
-        print("empty")
+        print("cleaned")
 
 
 # sluit de seriële connectie
@@ -63,8 +59,7 @@ def getpacket():
     try:
         protocol_understanding(binascii.hexlify(x))
     except:
-        print("guess what again")
-        print(x)
+        print("it happened again")
 
 
 # resets connection
@@ -79,7 +74,6 @@ def reset():
 def sendpacket(data=None):
     global connection
     clean_queue()
-    print("came here")
     print(data)
     connection.write(data)
     reset()
@@ -93,8 +87,6 @@ def addself():
 # adds tasks
 def add_task(task=getpacket, priority=3, args=None):
     # als er geen argumenten zijn gegeven hoeven die niet erbij
-    # TODO check how often reading data is in the queue and how often adding yourself is in the queue?
-    # TODO make sure that adding itsself is in there max 1-2 times and reading is in there max 3-5 times?
     if not ran_once:
         addself()
     if args is None:
@@ -137,7 +129,6 @@ def protocol_understanding(data):
             # print de waarde van de type_data naar de console
             print("temperatuur:" + str(int(waarde, 16)) + u'\u00B0' + "C")
         elif type_data == b'1':
-            print("lamp:" + str(int(waarde, 16)) + " color")
             new_color = int(waarde, 16)
         # elif type_data ==
             # print("type_data:" + str(int(waarde, 16)) + "eenheid")
@@ -145,11 +136,3 @@ def protocol_understanding(data):
             # print("type_data:" + str(int(waarde, 16)) + "eenheid")
         # elif type_data ==
             # print("type_data:" + str(int(waarde, 16)) + "eenheid")
-        else:
-            print("something went wrong")
-            print(data)
-
-    else:
-        print("didnt pass check")
-        print(data)
-

@@ -4,20 +4,23 @@ from python.performance_management import *
 from math import *
 
 
+def open_blinds():
+    close_blinds_command = bytes.fromhex("A01B0A")
+    add_task(sendpacket, args=(close_blinds_command,), priority=2)
+
+
+def close_blinds():
+    open_blinds_command = bytes.fromhex("A0280A")
+    add_task(sendpacket, args=(open_blinds_command,), priority=2)
+
+
 class Window:
     com_port = None
     connection_label = Label
 
-    def open_blinds(self):
-        close_blinds_command = bytes.fromhex("A01B0A")
-        add_task(sendpacket, args=(close_blinds_command,), priority=2)
-
-    def close_blinds(self):
-        open_blinds_command = bytes.fromhex("A0280A")
-        add_task(sendpacket, args=(open_blinds_command,), priority=2)
-
     # zorgt ervoor dat de verbinding word opgesteld
-    def connect(self):
+    @staticmethod
+    def connect():
         global com_port, connection_label
         choice = com_port.get()
         if choice is None or choice == "N/A" or choice == "none chosen":
@@ -31,7 +34,7 @@ class Window:
                 connection_label.config(text="connection: failed")
                 clean_queue()
 
-    def __init__(self, width=750, height=400, rows=100, columns=100):
+    def __init__(self, width=1200, height=750, rows=100, columns=100):
         global connection_label
         root = Tk()
         # geeft een titel aan de window
@@ -45,8 +48,8 @@ class Window:
         frame = Frame(root, width=width, height=height)
         frame.grid(column=0, row=0, rowspan=rows, columnspan=columns, sticky=(N, S, E, W))
 
-        connection_label = Label(frame, text="connection:")
-        connection_label.grid(column=1, row=8)
+        connection_label = Label(frame, text="connection: Status")
+        connection_label.grid(column=1, row=8, sticky="E,W")
 
         # creates the dropdown menu for the comports selecter, if it needs  to be updated this does that too
         def dropdown_menu():
@@ -73,8 +76,8 @@ class Window:
         connect = Button(frame, text="open connection", command=lambda: background(self.connect))
         closeconn = Button(frame, text="close connection", command=lambda: background(close))
         refresh = Button(frame, text="refresh com ports", command=dropdown_menu)
-        openblinds = Button(frame, text="open blinds", command=lambda: background(self.open_blinds))
-        closeblinds = Button(frame, text="close blinds", command=lambda: background(self.close_blinds))
+        openblinds = Button(frame, text="open blinds", command=lambda: background(open_blinds))
+        closeblinds = Button(frame, text="close blinds", command=lambda: background(close_blinds))
 
         # plaatst alle knoppen in de grid
         refresh.grid(column=95, row=9, sticky="E,W")
@@ -84,30 +87,63 @@ class Window:
         closeblinds.grid(column=95, row=81, sticky="E,W")
 
         # maakt de canvassen
-        canvas1 = Canvas(frame, width=ceil(width*0.1), height=ceil(height*0.3), bg='blue')
-        canvas2 = Canvas(frame, width=ceil(width*0.1), height=ceil(height*0.3), bg='red')
-        canvas3 = Canvas(frame, width=ceil(width*0.1), height=ceil(height*0.3), bg='green')
+        canvas1 = Canvas(frame, bg="white", width=ceil(frame.winfo_width()*0.4),
+                         height=ceil(frame.winfo_height()*0.3))
+        canvas2 = Canvas(frame, bg="white", width=ceil(frame.winfo_width() * 0.4),
+                         height=ceil(frame.winfo_height() * 0.3))
+
+        # plaats de canvas
+        canvas1.grid(column=4, row=70)
+        canvas2.grid(column=4, row=71)
+
+        # zorgt voor het resizen van de canvas en zet alles op de goede plek
+        def configure_canvas1(event):
+            # geeft de canvas een andere grootte
+            canvas1.config(width=ceil(frame.winfo_width()*0.4), height=ceil(frame.winfo_height()*0.3))
+            canvas1.delete("all")
+            # slaat de hoogte en breedte op in W en H
+            w, h = event.width, event.height
+
+            # tekent de assen
+            canvas1.create_line((w * 0.9), (h * 0.9), (w * 0.15), (h * 0.9), width=2, tags="x-as", fill="black")
+            canvas1.create_line((w * 0.15), (h * 0.1), (w * 0.15), (h * 0.9), width=2, tags="y-as", fill="black")
+
+            # plaats de text naast de assen
+            canvas1.create_text((w * 0.05), (h * 0.5), text='waarde', anchor=N, tags="line")
+            canvas1.create_text((w * 0.5), (h * 0.94), text='time', anchor=N, tags="line")
+
+            # zet de waarden langs de assen
+            for i in range(11):
+                x = i * (w * 0.75 * 0.1) + (w * 0.15)
+                canvas1.create_line(x, (h * 0.89), x, (h * 0.1), width=1, dash=(2, 5))
+                canvas1.create_text(x, (h * 0.90), text='%d' % (10 * i), anchor=N)
+
+            for j in range(11):
+                if j > 0:
+                    y = h - j * (h * 0.8 * 0.1) - (h * 0.1)
+                    canvas1.create_line((w * 0.15), y, (w * 0.9), y, width=1, dash=(2, 5))
+                    canvas1.create_text((w * 0.13), y, text='%d' % (10 * j), anchor=N)
+
+        canvas1.bind("<Configure>", configure_canvas1)
 
         ledstatus = Canvas(frame, width=20, height=20)
         ledstatus.create_oval(2, 2, 20, 20, fill="black", tags="ledstatus")
 
-
+        # changes the led status in the gui
         def updateled():
-            new_color = get_led()
-            if new_color == 1:
+            # gets the color value from the function in linker
+            color = get_led()
+            if color == 1:
                 ledstatus.create_oval(2, 2, 20, 20, fill="green", outline="green", tags="ledstatus")
-            elif new_color == 2:
+            elif color == 2:
                 ledstatus.create_oval(2, 2, 20, 20, fill="yellow", outline="yellow", tags="ledstatus")
-            elif new_color == 3:
+            elif color == 3:
                 ledstatus.create_oval(2, 2, 20, 20, fill="red", outline="red", tags="ledstatus")
+            # runs the updater again and changes the color
             ledstatus.after(1000, updateled)
 
+        # runs updateled in een andere thread
         backgroundarg(ledstatus.after, (1000, updateled,))
-
-        # plaats de canvassen
-        canvas1.grid(column=2, row=70, sticky="N,S,E,W")
-        canvas2.grid(column=3, row=70, sticky="N,S,E,W")
-        canvas3.grid(column=4, row=70, sticky="N,S,E,W")
 
         ledstatus.grid(column=1, row=9, sticky="N,S,E,W")
 
