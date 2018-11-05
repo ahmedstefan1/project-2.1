@@ -86,45 +86,76 @@ class Window:
         openblinds.grid(column=95, row=80, sticky="E,W")
         closeblinds.grid(column=95, row=81, sticky="E,W")
 
-        # maakt de canvassen
-        canvas1 = Canvas(frame, bg="white", width=ceil(frame.winfo_width()*0.4),
-                         height=ceil(frame.winfo_height()*0.3))
-        canvas2 = Canvas(frame, bg="white", width=ceil(frame.winfo_width() * 0.4),
-                         height=ceil(frame.winfo_height() * 0.3))
+        canvas1 = Canvas(frame, bd=0, highlightthickness=0, bg="white")
+        canvas2 = Canvas(frame, bd=0, highlightthickness=0, bg="blue")
+        canvas3 = Canvas(frame, bd=0, highlightthickness=0, bg="green")
 
-        # plaats de canvas
-        canvas1.grid(column=4, row=70)
-        canvas2.grid(column=4, row=71)
-
-        # zorgt voor het resizen van de canvas en zet alles op de goede plek
-        def configure_canvas1(event):
-            # geeft de canvas een andere grootte
-            canvas1.config(width=ceil(frame.winfo_width()*0.4), height=ceil(frame.winfo_height()*0.3))
+        # TODO add comments
+        def configure(event):
             canvas1.delete("all")
-            # slaat de hoogte en breedte op in W en H
+            canvas1.config(width=ceil(frame.winfo_width() * 0.4), height=ceil(frame.winfo_height() * 0.3))
+            canvas2.config(width=ceil(frame.winfo_width() * 0.4), height=ceil(frame.winfo_height() * 0.3))
+            canvas3.config(width=ceil(frame.winfo_width() * 0.4), height=ceil(frame.winfo_height() * 0.3))
             w, h = event.width, event.height
+            canvas1.create_line((w * 0.9), (h * 0.9), (w * 0.2), (h * 0.9), width=2, tags="x-as", fill="black")
+            canvas1.create_line((w * 0.2), (h * 0.1), (w * 0.2), (h * 0.9), width=2, tags="y-as", fill="black")
+            canvas1.create_text((w * 0.1), (h * 0.5), text='waarde', anchor=N, tags="line")
+            canvas1.create_text((w * 0.5), (h * 0.95), text='time', anchor=N, tags="line")
 
-            # tekent de assen
-            canvas1.create_line((w * 0.9), (h * 0.9), (w * 0.15), (h * 0.9), width=2, tags="x-as", fill="black")
-            canvas1.create_line((w * 0.15), (h * 0.1), (w * 0.15), (h * 0.9), width=2, tags="y-as", fill="black")
-
-            # plaats de text naast de assen
-            canvas1.create_text((w * 0.05), (h * 0.5), text='waarde', anchor=N, tags="line")
-            canvas1.create_text((w * 0.5), (h * 0.94), text='time', anchor=N, tags="line")
-
-            # zet de waarden langs de assen
             for i in range(11):
-                x = i * (w * 0.75 * 0.1) + (w * 0.15)
+                x = i * (w * 0.7 * 0.1) + (w * 0.2)
                 canvas1.create_line(x, (h * 0.89), x, (h * 0.1), width=1, dash=(2, 5))
                 canvas1.create_text(x, (h * 0.90), text='%d' % (10 * i), anchor=N)
 
             for j in range(11):
                 if j > 0:
                     y = h - j * (h * 0.8 * 0.1) - (h * 0.1)
-                    canvas1.create_line((w * 0.15), y, (w * 0.9), y, width=1, dash=(2, 5))
-                    canvas1.create_text((w * 0.13), y, text='%d' % (10 * j), anchor=N)
+                    canvas1.create_line((w * 0.2), y, (w * 0.9), y, width=1, dash=(2, 5))
+                    canvas1.create_text((w * 0.18), y, text='%d' % (10 * j), anchor=N)
 
-        canvas1.bind("<Configure>", configure_canvas1)
+            canvas2.delete("all")
+            w, h = event.width, event.height
+            canvas2.create_line((w * 0.9), (h * 0.9), (w * 0.2), (h * 0.9), width=2, tags="x-as", fill="black")
+            canvas2.create_line((w * 0.2), (h * 0.1), (w * 0.2), (h * 0.9), width=2, tags="y-as", fill="black")
+            canvas2.create_text((w * 0.1), (h * 0.5), text='waarde', anchor=N, tags="line")
+            canvas2.create_text((w * 0.5), (h * 0.95), text='time', anchor=N, tags="line")
+
+            for i in range(11):
+                x = i * (w * 0.7 * 0.1) + (w * 0.2)
+                canvas2.create_line(x, (h * 0.89), x, (h * 0.1), width=1, dash=(2, 5))
+                canvas2.create_text(x, (h * 0.90), text='%d' % (10 * i), anchor=N)
+
+            for j in range(11):
+                if j > 0:
+                    y = h - j * (h * 0.8 * 0.1) - (h * 0.1)
+                    canvas2.create_line((w * 0.2), y, (w * 0.9), y, width=1, dash=(2, 5))
+                    canvas2.create_text((w * 0.18), y, text='%d' % (10 * j), anchor=N)
+
+            canvas3.delete("all")
+            w, h = event.width, event.height
+            canvas3.create_line((w * 0.9), (h * 0.9), (w * 0.2), (h * 0.9), width=2, tags="x-as", fill="black")
+            canvas3.create_line((w * 0.2), (h * 0.1), (w * 0.2), (h * 0.9), width=2, tags="y-as", fill="black")
+            canvas3.create_text((w * 0.1), (h * 0.5), text='waarde', anchor=N, tags="line")
+            canvas3.create_text((w * 0.5), (h * 0.95), text='time', anchor=N, tags="line")
+
+            for i in range(11):
+                x = i * (w * 0.7 * 0.1) + (w * 0.2)
+                canvas3.create_line(x, (h * 0.89), x, (h * 0.1), width=1, dash=(2, 5))
+                canvas3.create_text(x, (h * 0.90), text='%d' % (10 * i), anchor=N)
+
+            for j in range(11):
+                if j > 0:
+                    y = h - j * (h * 0.8 * 0.1) - (h * 0.1)
+                    canvas3.create_line((w * 0.2), y, (w * 0.9), y, width=1, dash=(2, 5))
+                    canvas3.create_text((w * 0.18), y, text='%d' % (10 * j), anchor=N)
+
+        canvas1.bind("<Configure>", configure)
+        canvas2.bind("<Configure>", configure)
+        canvas3.bind("<Configure>", configure)
+
+        canvas1.grid(row=70, column=4)
+        canvas2.grid(row=71, column=4)
+        canvas3.grid(row=71, column=5)
 
         ledstatus = Canvas(frame, width=20, height=20)
         ledstatus.create_oval(2, 2, 20, 20, fill="black", tags="ledstatus")
