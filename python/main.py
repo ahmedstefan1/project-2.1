@@ -71,7 +71,7 @@ class Window:
 
         # maakt alle knoppen
         connect = Button(frame, text="open connection", command=lambda: background(self.connect))
-        closeconn = Button(frame, text="close connection", command=lambda: add_task(close))
+        closeconn = Button(frame, text="close connection", command=lambda: background(close))
         refresh = Button(frame, text="refresh com ports", command=dropdown_menu)
         openblinds = Button(frame, text="open blinds", command=lambda: background(self.open_blinds))
         closeblinds = Button(frame, text="close blinds", command=lambda: background(self.close_blinds))
@@ -89,13 +89,26 @@ class Window:
         canvas3 = Canvas(frame, width=ceil(width*0.1), height=ceil(height*0.3), bg='green')
 
         ledstatus = Canvas(frame, width=20, height=20)
-        ledstatus.create_oval(2, 2, 20, 20, fill="black")
+        ledstatus.create_oval(2, 2, 20, 20, fill="black", tags="ledstatus")
 
+
+        def updateled():
+            new_color = get_led()
+            if new_color == 1:
+                ledstatus.create_oval(2, 2, 20, 20, fill="green", outline="green", tags="ledstatus")
+            elif new_color == 2:
+                ledstatus.create_oval(2, 2, 20, 20, fill="yellow", outline="yellow", tags="ledstatus")
+            elif new_color == 3:
+                ledstatus.create_oval(2, 2, 20, 20, fill="red", outline="red", tags="ledstatus")
+            ledstatus.after(1000, updateled)
+
+        backgroundarg(ledstatus.after, (1000, updateled,))
 
         # plaats de canvassen
         canvas1.grid(column=2, row=70, sticky="N,S,E,W")
         canvas2.grid(column=3, row=70, sticky="N,S,E,W")
         canvas3.grid(column=4, row=70, sticky="N,S,E,W")
+
         ledstatus.grid(column=1, row=9, sticky="N,S,E,W")
 
         # zorgt voor het automatisch scalen van alle rows en colommen

@@ -1,6 +1,7 @@
 import serial
 import serial.tools.list_ports as com_ports
 import binascii
+import python.main
 from sched import *
 from time import *
 
@@ -9,6 +10,8 @@ connection = serial.Serial()
 s = scheduler(time, sleep)
 ran_once = False
 used_com = None
+color_led = None
+new_color = None
 
 
 # haalt op wat voor comports zijn aangesloten op de PC
@@ -103,8 +106,18 @@ def add_task(task=getpacket, priority=3, args=None):
     s.run()
 
 
+def get_led():
+    global color_led, new_color
+    if color_led == new_color:
+        return color_led
+    else:
+        color_led = new_color
+        return color_led
+
+
 # understands the protocol and checks for mistakes
 def protocol_understanding(data):
+    global new_color
     # slices the data to what is needed
     sliced_data = data[0:4]
 
@@ -123,8 +136,9 @@ def protocol_understanding(data):
         if type_data == b'8':
             # print de waarde van de type_data naar de console
             print("temperatuur:" + str(int(waarde, 16)) + u'\u00B0' + "C")
-        # elif type_data ==
-            # print("type_data:" + str(int(waarde, 16)) + "eenheid")
+        elif type_data == b'1':
+            print("lamp:" + str(int(waarde, 16)) + " color")
+            new_color = int(waarde, 16)
         # elif type_data ==
             # print("type_data:" + str(int(waarde, 16)) + "eenheid")
         # elif type_data ==
