@@ -86,11 +86,12 @@ class Window:
         openblinds.grid(column=95, row=80, sticky="E,W")
         closeblinds.grid(column=95, row=81, sticky="E,W")
 
+        # maakt alle canvassen
         canvas1 = Canvas(frame, bd=0, highlightthickness=0, bg="white")
         canvas2 = Canvas(frame, bd=0, highlightthickness=0, bg="blue")
         canvas3 = Canvas(frame, bd=0, highlightthickness=0, bg="green")
 
-        # TODO add comments
+        # geeft de canvas een dynamische grootte
         def configure(event):
             canvas1.delete("all")
             canvas2.delete("all")
