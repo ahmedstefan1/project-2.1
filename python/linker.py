@@ -146,7 +146,7 @@ def protocol_understanding(data):
         # welke type_data komt het uit
         if type_data == b'8':
             # print de waarde van de type_data naar de console
-            temperature = int(waarde, 16)-30
+            temperature = int(waarde, 16)
         elif type_data == b'1':
             new_color = int(waarde, 16)
         elif type_data == b'2':

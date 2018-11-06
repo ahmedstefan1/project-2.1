@@ -165,10 +165,32 @@ class Window:
         canvas2.bind("<Configure>", configure)
         canvas3.bind("<Configure>", configure)
 
+        temp_x2 = None
+        temp_y2 = None
+        temp_s = 0
+
         def create_lines_temp():
+            nonlocal temp_s, temp_x2, temp_y2
+            width = int(canvas1.cget("width"))
+            height = int(canvas1.cget("height"))
+            if temp_s >= 10:
+                temp_s = 0
+                temp_x2 = int(canvas1.cget("width")) * 0.2
+                canvas1.delete('line')
+                print("reset")
+            if temp_x2 is None:
+                temp_x2 = int(canvas1.cget("width")) * 0.2
             if get_temp() is not None:
                 temp = get_temp()
                 print(temp)
+                if temp_y2 is None:
+                    temp_y2 = (height * 0.9) - (height * 0.8 / 100 * temp)
+                x1 = temp_x2 + (width * 0.7 * 0.1)
+                y1 = (height * 0.9) - (height * 0.8 / 100 * temp)
+                canvas1.create_line(x1, y1, temp_x2, temp_y2, fill='blue', tags='line', width=2)
+                temp_x2 = x1
+                temp_y2 = y1
+                temp_s += 1
             canvas1.after(1000, create_lines_temp)
 
         light_x2 = None
