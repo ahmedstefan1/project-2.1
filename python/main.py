@@ -108,8 +108,8 @@ class Window:
             canvas1.create_line((w * 0.9), (h * 0.9), (w * 0.2), (h * 0.9), width=2, tags="x-as", fill="black")
             canvas1.create_line((w * 0.2), (h * 0.1), (w * 0.2), (h * 0.9), width=2, tags="y-as", fill="black")
             canvas1.create_text((w * 0.5), (h * 0.01), text='temperatuur', anchor=N, tags="line")
-            canvas1.create_text((w * 0.1), (h * 0.5), text=(u'\u00B0' + "C"), anchor=N, tags="line")
-            canvas1.create_text((w * 0.5), (h * 0.95), text='time', anchor=N, tags="line")
+            canvas1.create_text((w * 0.1), (h * 0.5), text=(u'\u00B0' + "C"), anchor=N, tags="temp")
+            canvas1.create_text((w * 0.5), (h * 0.95), text='time', anchor=N, tags="temp")
 
             # tekent alle stippenlijnen en text voor canvas 1
             for a in range(11):
@@ -125,9 +125,9 @@ class Window:
             # tekent alle lijnen en text voor canvas 2
             canvas2.create_line((w * 0.9), (h * 0.9), (w * 0.2), (h * 0.9), width=2, tags="x-as", fill="black")
             canvas2.create_line((w * 0.2), (h * 0.1), (w * 0.2), (h * 0.9), width=2, tags="y-as", fill="black")
-            canvas2.create_text((w * 0.5), (h * 0.01), text='afstand', anchor=N, tags="line")
-            canvas2.create_text((w * 0.1), (h * 0.5), text='CM', anchor=N, tags="line")
-            canvas2.create_text((w * 0.5), (h * 0.95), text='time', anchor=N, tags="line")
+            canvas2.create_text((w * 0.5), (h * 0.01), text='afstand', anchor=N, tags="temp")
+            canvas2.create_text((w * 0.1), (h * 0.5), text='CM', anchor=N, tags="temp")
+            canvas2.create_text((w * 0.5), (h * 0.95), text='time', anchor=N, tags="temp")
 
             # tekent alle stippenlijnen voor canvas 2
             for c in range(11):
@@ -144,9 +144,9 @@ class Window:
             # maakt alle normale lijnen en text voor canvas 3
             canvas3.create_line((w * 0.9), (h * 0.9), (w * 0.2), (h * 0.9), width=2, tags="x-as", fill="black")
             canvas3.create_line((w * 0.2), (h * 0.1), (w * 0.2), (h * 0.9), width=2, tags="y-as", fill="black")
-            canvas3.create_text((w * 0.5), (h * 0.01), text='licht', anchor=N, tags="line")
-            canvas3.create_text((w * 0.1), (h * 0.5), text='%', anchor=N, tags="line")
-            canvas3.create_text((w * 0.5), (h * 0.95), text='time', anchor=N, tags="line")
+            canvas3.create_text((w * 0.5), (h * 0.01), text='licht', anchor=N, tags="temp")
+            canvas3.create_text((w * 0.1), (h * 0.5), text='%', anchor=N, tags="temp")
+            canvas3.create_text((w * 0.5), (h * 0.95), text='time', anchor=N, tags="temp")
 
             # maakt alle stippenlijnen voor canvas 3
             for e in range(11):
@@ -171,21 +171,65 @@ class Window:
                 print(temp)
             canvas1.after(1000, create_lines_temp)
 
+        light_x2 = None
+        light_y2 = None
+        light_s = 0
+
         def create_lines_light():
+            nonlocal light_s, light_x2, light_y2
+            width = int(canvas3.cget("width"))
+            height = int(canvas3.cget("height"))
+            if light_s >= 10:
+                light_s = 0
+                light_x2 = int(canvas3.cget("width"))*0.2
+                canvas3.delete('line')
+                print("reset")
+            if light_x2 is None:
+                light_x2 = int(canvas3.cget("width")) * 0.2
             if get_light() is not None:
                 light = get_light()
                 print(light)
-            canvas1.after(1000, create_lines_light)
+                if light_y2 is None:
+                    light_y2 = (height*0.9)-(height*0.8/100*light)
+                x1 = light_x2 + (width*0.7*0.1)
+                y1 = (height*0.9)-(height*0.8/100*light)
+                canvas3.create_line(x1, y1, light_x2, light_y2, fill='blue', tags='line', width=2)
+                light_x2 = x1
+                light_y2 = y1
+                light_s += 1
+            canvas3.after(1000, create_lines_light)
+
+        distance_x2 = None
+        distance_y2 = None
+        distance_s = 0
 
         def create_lines_distance():
+            nonlocal distance_s, distance_x2, distance_y2
+            width = int(canvas2.cget("width"))
+            height = int(canvas2.cget("height"))
+            if distance_s >= 10:
+                distance_s = 0
+                distance_x2 = int(canvas2.cget("width")) * 0.2
+                canvas2.delete('line')
+                print("reset")
+            if distance_x2 is None:
+                distance_x2 = int(canvas2.cget("width")) * 0.2
             if get_distance() is not None:
                 distance = get_distance()
                 print(distance)
-            canvas1.after(1000, create_lines_distance)
+                if distance_y2 is None:
+                    distance_y2 = (height * 0.9) - (height * 0.8 / 100 * distance)
+                x1 = distance_x2 + (width * 0.7 * 0.1)
+                y1 = (height * 0.9) - (height * 0.8 / 100 * distance)
+                canvas2.create_line(x1, y1, distance_x2, distance_y2, fill='yellow', tags='line', width=2)
+                distance_x2 = x1
+                distance_y2 = y1
+                distance_s += 1
+            canvas2.after(1000, create_lines_distance)
 
         backgroundarg(canvas1.after, (1000, create_lines_temp,))
-        backgroundarg(canvas2.after, (1000, create_lines_light,))
-        backgroundarg(canvas3.after, (1000, create_lines_distance,))
+        backgroundarg(canvas3.after, (1000, create_lines_light,))
+        backgroundarg(canvas2.after, (1000, create_lines_distance,))
 
         # plaatst de canvassen in een grid
         canvas1.grid(row=70, column=4)
