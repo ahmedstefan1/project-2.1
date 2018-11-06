@@ -139,7 +139,7 @@ class Window:
                 if d > 0:
                     y = h - d * (h * 0.8 * 0.1) - (h * 0.1)
                     canvas2.create_line((w * 0.2), y, (w * 0.9), y, width=1, dash=(2, 5))
-                    canvas2.create_text((w * 0.17), y, text='%d' % (10 * d), anchor=N)
+                    canvas2.create_text((w * 0.17), y-10, text='%d' % (10 * d), anchor=N)
 
             # maakt alle normale lijnen en text voor canvas 3
             canvas3.create_line((w * 0.9), (h * 0.9), (w * 0.2), (h * 0.9), width=2, tags="x-as", fill="black")
@@ -158,7 +158,7 @@ class Window:
                 if f > 0:
                     y = h - f * (h * 0.8 * 0.1) - (h * 0.1)
                     canvas3.create_line((w * 0.2), y, (w * 0.9), y, width=1, dash=(2, 5))
-                    canvas3.create_text((w * 0.17), y, text='%d' % (10 * f), anchor=N)
+                    canvas3.create_text((w * 0.17), y-10, text='%d' % (10 * f), anchor=N)
 
         # zorgt ervoor dat de 3 canvassen aan de functie configure aangesloten zijn
         canvas1.bind("<Configure>", configure)
