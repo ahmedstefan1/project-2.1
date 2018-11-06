@@ -12,6 +12,10 @@ used_com = None
 color_led = None
 new_color = None
 
+temperature = None
+distance = None
+light_intensity = None
+
 
 # haalt op wat voor comports zijn aangesloten op de PC
 def get_com_ports():
@@ -107,9 +111,24 @@ def get_led():
         return color_led
 
 
+def get_temp():
+    global temperature
+    return temperature
+
+
+def get_light():
+    global light_intensity
+    return light_intensity
+
+
+def get_distance():
+    global distance
+    return distance
+
+
 # understands the protocol and checks for mistakes
 def protocol_understanding(data):
-    global new_color
+    global new_color, temperature, distance, light_intensity
     # slices the data to what is needed
     sliced_data = data[0:4]
 
@@ -127,12 +146,12 @@ def protocol_understanding(data):
         # welke type_data komt het uit
         if type_data == b'8':
             # print de waarde van de type_data naar de console
-            print("temperatuur:" + str(int(waarde, 16)) + u'\u00B0' + "C")
+            temperature = int(waarde, 16)-30
         elif type_data == b'1':
             new_color = int(waarde, 16)
-        # elif type_data ==
-            # print("type_data:" + str(int(waarde, 16)) + "eenheid")
-        # elif type_data ==
-            # print("type_data:" + str(int(waarde, 16)) + "eenheid")
+        elif type_data == b'2':
+            distance = int(waarde, 16)
+        elif type_data == b'4':
+            light_intensity = int(waarde, 16)
         # elif type_data ==
             # print("type_data:" + str(int(waarde, 16)) + "eenheid")

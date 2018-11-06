@@ -34,7 +34,7 @@ class Window:
                 connection_label.config(text="connection: failed")
                 clean_queue()
 
-    def __init__(self, width=750, height=500, rows=100, columns=100):
+    def __init__(self, width=850, height=500, rows=100, columns=100):
         global connection_label
         root = Tk()
         # geeft een titel aan de window
@@ -97,9 +97,9 @@ class Window:
             canvas2.delete("all")
             canvas3.delete("all")
             # geeft de grootte van de canvassen
-            canvas1.config(width=ceil(frame.winfo_width() * 0.4), height=ceil(frame.winfo_height() * 0.3))
-            canvas2.config(width=ceil(frame.winfo_width() * 0.4), height=ceil(frame.winfo_height() * 0.3))
-            canvas3.config(width=ceil(frame.winfo_width() * 0.4), height=ceil(frame.winfo_height() * 0.3))
+            canvas1.config(width=ceil(frame.winfo_width() * 0.35), height=ceil(frame.winfo_height() * 0.3))
+            canvas2.config(width=ceil(frame.winfo_width() * 0.35), height=ceil(frame.winfo_height() * 0.3))
+            canvas3.config(width=ceil(frame.winfo_width() * 0.35), height=ceil(frame.winfo_height() * 0.3))
 
             # zet de groote in variabelen
             w, h = event.width, event.height
@@ -107,7 +107,8 @@ class Window:
             # tekent alle lijnen voor canvas 1
             canvas1.create_line((w * 0.9), (h * 0.9), (w * 0.2), (h * 0.9), width=2, tags="x-as", fill="black")
             canvas1.create_line((w * 0.2), (h * 0.1), (w * 0.2), (h * 0.9), width=2, tags="y-as", fill="black")
-            canvas1.create_text((w * 0.1), (h * 0.5), text='waarde', anchor=N, tags="line")
+            canvas1.create_text((w * 0.5), (h * 0.01), text='temperatuur', anchor=N, tags="line")
+            canvas1.create_text((w * 0.1), (h * 0.5), text=(u'\u00B0' + "C"), anchor=N, tags="line")
             canvas1.create_text((w * 0.5), (h * 0.95), text='time', anchor=N, tags="line")
 
             # tekent alle stippenlijnen en text voor canvas 1
@@ -117,15 +118,15 @@ class Window:
                 canvas1.create_text(x, (h * 0.90), text='%d' % (10 * a), anchor=N)
 
             for b in range(11):
-                if b > 0:
-                    y = h - b * (h * 0.8 * 0.1) - (h * 0.1)
-                    canvas1.create_line((w * 0.2), y, (w * 0.9), y, width=1, dash=(2, 5))
-                    canvas1.create_text((w * 0.18), y, text='%d' % (10 * b), anchor=N)
+                y = h - b * (h * 0.8 * 0.1) - (h * 0.1)
+                canvas1.create_line((w * 0.2), y, (w * 0.9), y, width=1, dash=(2, 5))
+                canvas1.create_text((w * 0.17), (y-10), text='%d' % (10 * (b-3)), anchor=N)
 
             # tekent alle lijnen en text voor canvas 2
             canvas2.create_line((w * 0.9), (h * 0.9), (w * 0.2), (h * 0.9), width=2, tags="x-as", fill="black")
             canvas2.create_line((w * 0.2), (h * 0.1), (w * 0.2), (h * 0.9), width=2, tags="y-as", fill="black")
-            canvas2.create_text((w * 0.1), (h * 0.5), text='waarde', anchor=N, tags="line")
+            canvas2.create_text((w * 0.5), (h * 0.01), text='afstand', anchor=N, tags="line")
+            canvas2.create_text((w * 0.1), (h * 0.5), text='CM', anchor=N, tags="line")
             canvas2.create_text((w * 0.5), (h * 0.95), text='time', anchor=N, tags="line")
 
             # tekent alle stippenlijnen voor canvas 2
@@ -138,12 +139,13 @@ class Window:
                 if d > 0:
                     y = h - d * (h * 0.8 * 0.1) - (h * 0.1)
                     canvas2.create_line((w * 0.2), y, (w * 0.9), y, width=1, dash=(2, 5))
-                    canvas2.create_text((w * 0.18), y, text='%d' % (10 * d), anchor=N)
+                    canvas2.create_text((w * 0.17), y, text='%d' % (10 * d), anchor=N)
 
             # maakt alle normale lijnen en text voor canvas 3
             canvas3.create_line((w * 0.9), (h * 0.9), (w * 0.2), (h * 0.9), width=2, tags="x-as", fill="black")
             canvas3.create_line((w * 0.2), (h * 0.1), (w * 0.2), (h * 0.9), width=2, tags="y-as", fill="black")
-            canvas3.create_text((w * 0.1), (h * 0.5), text='waarde', anchor=N, tags="line")
+            canvas3.create_text((w * 0.5), (h * 0.01), text='licht', anchor=N, tags="line")
+            canvas3.create_text((w * 0.1), (h * 0.5), text='%', anchor=N, tags="line")
             canvas3.create_text((w * 0.5), (h * 0.95), text='time', anchor=N, tags="line")
 
             # maakt alle stippenlijnen voor canvas 3
@@ -156,12 +158,34 @@ class Window:
                 if f > 0:
                     y = h - f * (h * 0.8 * 0.1) - (h * 0.1)
                     canvas3.create_line((w * 0.2), y, (w * 0.9), y, width=1, dash=(2, 5))
-                    canvas3.create_text((w * 0.18), y, text='%d' % (10 * f), anchor=N)
+                    canvas3.create_text((w * 0.17), y, text='%d' % (10 * f), anchor=N)
 
         # zorgt ervoor dat de 3 canvassen aan de functie configure aangesloten zijn
         canvas1.bind("<Configure>", configure)
         canvas2.bind("<Configure>", configure)
         canvas3.bind("<Configure>", configure)
+
+        def create_lines_temp():
+            if get_temp() is not None:
+                temp = get_temp()
+                print(temp)
+            canvas1.after(1000, create_lines_temp)
+
+        def create_lines_light():
+            if get_light() is not None:
+                light = get_light()
+                print(light)
+            canvas1.after(1000, create_lines_light)
+
+        def create_lines_distance():
+            if get_distance() is not None:
+                distance = get_distance()
+                print(distance)
+            canvas1.after(1000, create_lines_distance)
+
+        backgroundarg(canvas1.after, (1000, create_lines_temp,))
+        backgroundarg(canvas2.after, (1000, create_lines_light,))
+        backgroundarg(canvas3.after, (1000, create_lines_distance,))
 
         # plaatst de canvassen in een grid
         canvas1.grid(row=70, column=4)
