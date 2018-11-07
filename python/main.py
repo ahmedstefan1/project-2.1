@@ -32,6 +32,7 @@ class Window:
                 serial_connection(choice)
             except:
                 connection_label.config(text="connection: failed")
+                end()
                 clean_queue()
 
     def __init__(self, width=850, height=500, rows=100, columns=100):
@@ -69,6 +70,7 @@ class Window:
         def close():
             add_task(close_connection, args=None, priority=1)
             connection_label.config(text="connection: closed")
+            end()
 
         dropdown_menu()
 

@@ -126,6 +126,12 @@ def get_distance():
     return distance
 
 
+def end():
+    global distance, light_intensity, temperature
+    distance = light_intensity  = 0
+    temperature = 30
+
+
 # understands the protocol and checks for mistakes
 def protocol_understanding(data):
     global new_color, temperature, distance, light_intensity
