@@ -152,12 +152,12 @@ def protocol_understanding(data):
         # welke type_data komt het uit
         if type_data == b'8':
             # print de waarde van de type_data naar de console
-            temperature = int(waarde, 16)
+            temperature = int(waarde, 16)+30
         elif type_data == b'1':
             new_color = int(waarde, 16)
         elif type_data == b'2':
             distance = int(waarde, 16)
         elif type_data == b'4':
-            light_intensity = int(waarde, 16)
+            light_intensity = int(waarde, 16) / 255 *100
         # elif type_data ==
             # print("type_data:" + str(int(waarde, 16)) + "eenheid")
