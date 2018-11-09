@@ -70,10 +70,34 @@ int ADCsingleREAD(uint8_t ADCport)
 	//return adc waarde
 	return ADCwaarde;
 }
+
+
 void encode(int sensor, int data){
 
-	transmit(0x00);
-	transmit(0x00);
+	unsigned char value1;
+	unsigned char value2;
+	unsigned char value3;
+
+	unsigned char first_hex;
+	unsigned char second_hex;
+	unsigned char xor;
+
+	unsigned char temp;
+
+	first_hex = (sensor & 0x0F)<<4;
+	temp = (data & 0xF0)>>4;
+	first_hex = first_hex | temp;
+	second_hex = (data & 0x0F)<<4;
+
+	value1 = sensor;
+	value2 = (data & 0xF0)>>4;
+	value3 = data & 0x0F;
+	xor = value1 ^ value2 ^ value3;
+
+	second_hex  = second_hex | xor;
+
+	transmit(first_hex);
+	transmit(second_hex);
 	transmit(0x0A);
 }
 
@@ -117,6 +141,8 @@ int main() {
 	SCH_Start();
 	while (1) {
 		SCH_Dispatch_Tasks();
+		//encode(1,0x23);
+		_delay_ms(1000);
 	}
 }
 
