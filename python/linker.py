@@ -7,7 +7,6 @@ from time import *
 
 connection = serial.Serial()
 s = scheduler(time, sleep)
-ran_once = False
 used_com = None
 color_led = None
 new_color = None
@@ -68,8 +67,7 @@ def getpacket():
 
 # resets connection
 def reset():
-    global ran_once, used_com
-    ran_once = False
+    global used_com
     close_connection()
     serial_connection(used_com)
 
@@ -91,8 +89,6 @@ def addself():
 # adds tasks
 def add_task(task=getpacket, priority=3, args=None):
     # als er geen argumenten zijn gegeven hoeven die niet erbij
-    if not ran_once:
-        addself()
     if args is None:
         s.enter(0.2, priority, task)
     else:
@@ -161,3 +157,5 @@ def protocol_understanding(data):
             light_intensity = int(waarde, 16) / 255 *100
         # elif type_data ==
             # print("type_data:" + str(int(waarde, 16)) + "eenheid")
+
+    s.enter(0.2, 3, add_task)
