@@ -308,7 +308,7 @@ class Window:
             frame.rowconfigure(j, weight=1)
 
         # zorgt voor mooi icoontje links bovenin
-        root.iconbitmap('./python/windowicon.ico')
+       # root.iconbitmap('./python/windowicon.ico')
 
         root.mainloop()
 
