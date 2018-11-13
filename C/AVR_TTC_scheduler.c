@@ -148,7 +148,7 @@ unsigned char SCH_Delete_Task(const unsigned char TASK_INDEX)
 
 -*------------------------------------------------------------------*/
 
-void SCH_Init_T1(void)
+void SCH_Init_T0(void)
 {
    unsigned char i;
 
@@ -161,9 +161,10 @@ void SCH_Init_T1(void)
    // Values for 1ms and 10ms ticks are provided for various crystals
 
    // Hier moet de timer periode worden aangepast ....!
-   OCR1A = (uint16_t)625;   		     // 10ms = (256/16.000.000) * 625
-   TCCR1B = (1 << CS12) | (1 << WGM12);  // prescale op 64, top counter = value OCR1A (CTC mode)
-   TIMSK1 = 1 << OCIE1A;   		     // Timer 1 Output Compare A Match Interrupt Enable
+   OCR0A = (uint16_t)625;   		     // 10ms = (256/16.000.000) * 625
+   TCCR0A = (1 << WGM01);
+   TCCR0B = (1 << CS02); // prescale op 64, top counter = value OCR1A (CTC mode)
+   TIMSK0 = 1 << OCIE0A;   		     // Timer 1 Output Compare A Match Interrupt Enable
 }
 
 /*------------------------------------------------------------------*-
@@ -175,8 +176,8 @@ void SCH_Init_T1(void)
   NOTE: Usually called after all regular tasks are added,
   to keep the tasks synchronised.
 
-  NOTE: ONLY THE SCHEDULER INTERRUPT SHOULD BE ENABLED!!! 
- 
+  NOTE: ONLY THE SCHEDULER INTERRUPT SHOULD BE ENABLED!!!
+
 -*------------------------------------------------------------------*/
 
 void SCH_Start(void)
@@ -188,12 +189,12 @@ void SCH_Start(void)
 
   SCH_Update
 
-  This is the scheduler ISR.  It is called at a rate 
+  This is the scheduler ISR.  It is called at a rate
   determined by the timer settings in SCH_Init_T1().
 
 -*------------------------------------------------------------------*/
 
-ISR(TIMER1_COMPA_vect)
+ISR(TIMER0_COMPA_vect)
 {
    unsigned char Index;
    for(Index = 0; Index < SCH_MAX_TASKS; Index++)
