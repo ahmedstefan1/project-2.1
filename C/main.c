@@ -96,8 +96,19 @@ void encode(int sensor, int data){
 	transmit(0x0A);
 }
 
+void send_burst(){
+	// zet de trigger hoog
+	PORTB |= (1<<PB1);
+	// voor 10uS
+	_delay_us(10);
+	// doet de trigger uit
+	PORTB &= ~(1<<PB1);
+	// turn on debugging LED
+	PORTB |= (1<<PB3);
+}
 
-void getadc()
+
+void getsensors()
 {
 	double ADCwaarde = 0;
 	int degrees = 0;
@@ -113,17 +124,9 @@ void getadc()
 		encode(8,degrees);
 		// reads light sensor and encodes it and transmits it, light sensor needs no conversion
 		encode(4, ADCsingleREAD(0));
+		send_burst();
 		_delay_ms(1000);
 	}
-}
-
-void send_burst(){
-	// zet de trigger hoog
-	PORTB |= (1<<PB1);
-	// voor 10uS
-	_delay_us(10);
-	// doet de trigger uit
-	PORTB &= ~(1<<PB1);
 }
 
 
@@ -133,12 +136,13 @@ int main() {
 	init();
 	SCH_Init_T0();
 	unsigned char ultrasoon;
-	//unsigned char run_adc;
+	unsigned char run_sensors;
+	//unsigned char delayfunc;
 	//unsigned char ontvang;
 
 	//voegt de task voor et uitlezen van de ultrasoon toe
-	ultrasoon = SCH_Add_Task(send_burst,1,100);
-	//run_adc = SCH_Add_Task(getadc,5,1000);
+	run_sensors = SCH_Add_Task(getsensors,5,1000);
+	//delayfunc = SCH_Add_Task(delay,2,1000);
 	//ontvang = SCH_Add_Task(recieve,0,100);
 	SCH_Start();
 	while (1) {
@@ -156,7 +160,7 @@ ISR(PCINT0_vect) {
 		// Reset Timer
 		TCNT1 = 0;
 		// doet de debugging LED aan
-		PORTB |= (1<<PB3);
+		//PORTB |= (1<<PB3);
 	} else {
 		// Save Timer value
 		uint16_t numuS = TCNT1;
