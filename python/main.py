@@ -68,10 +68,20 @@ class Window:
         # maakt textvak voor inkomende temperatuur
         tekstvak = Text(frame, height=9, width=30)
         tekstvak.grid(column=5, row=70, sticky="W,E")
+        def update_tekstvak():
+            tekstvak.delete(CURRENT, END)
+            tekstvak.insert(INSERT, "Waardes op dit moment: \n"
+                            "Temperatuur (\u00B0C): ", str(get_temp()), "\n"
+                            "Afstand (cm): ", str(get_distance()),
+                            "\n"
+                            "Licht (%): ", str(get_light()))
         tekstvak.insert(INSERT, "Waardes op dit moment: \n"
                         "Temperatuur (\u00B0C): ", str(get_temp()), "\n"
                         "Afstand (cm): ", str(get_distance()), "\n"
                         "Licht (%): ", str(get_light()))
+
+        tekstvak.after(1000, update_tekstvak)
+
 
         # creates the dropdown menu for the comports selecter, if it needs  to be updated this does that too
         def dropdown_menu():
