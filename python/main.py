@@ -212,7 +212,6 @@ class Window:
                 temp_s = 0
                 temp_x2 = int(canvas1.cget("width")) * 0.2
                 canvas1.delete('line')
-                print("reset")
             # als de temperatuur x2 niks is dan haalt hij de breedte op van de canvas
             if temp_x2 is None:
                 temp_x2 = int(canvas1.cget("width")) * 0.2
@@ -220,7 +219,6 @@ class Window:
             # haalt de temperatuur op
             if get_temp() is not None:
                 temp = get_temp()
-                print(temp)
                 if temp_y2 is None:
                     temp_y2 = (height * 0.9) - (height * 0.8 / 100 * temp)
                 # wat rekenen is nodig voor het goed zetten van de lijn
@@ -248,14 +246,12 @@ class Window:
                 light_s = 0
                 light_x2 = int(canvas3.cget("width"))*0.2
                 canvas3.delete('line')
-                print("reset")
             # als de temperatuur x2 niks is dan haalt hij de breedte op van de canvas
             if light_x2 is None:
                 light_x2 = int(canvas3.cget("width")) * 0.2
             # haalt de licht intensiteit op
             if get_light() is not None:
                 light = get_light()
-                print(light)
                 if light_y2 is None:
                     light_y2 = (height*0.9)-(height*0.8/100*light)
                 # wat rekenen is nodig voor het goed zetten van de lijn
@@ -282,14 +278,12 @@ class Window:
                 distance_s = 0
                 distance_x2 = int(canvas2.cget("width")) * 0.2
                 canvas2.delete('line')
-                print("reset")
             # als de distance x2 niks is dan haalt hij de breedte op van de canvas
             if distance_x2 is None:
                 distance_x2 = int(canvas2.cget("width")) * 0.2
             # haalt de afstand op
             if get_distance() is not None:
                 distance = get_distance()
-                print(distance)
                 if distance_y2 is None:
                     distance_y2 = (height * 0.9) - (height * 0.8 / 100 * distance)
                 # wat rekenen is nodig voor het goed zetten van de lijn
