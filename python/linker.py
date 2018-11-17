@@ -96,7 +96,14 @@ def add_task(task=getpacket, priority=3, args=None):
         s.enter(0.2, priority, task, argument=args)
     # zorgt ervoor dat deze taak zichzelf oproept zodat je niet alleen 1 keer de getpackets uitvoert
     # voert de taken uit
-    s.run()
+    try:
+        s.run()
+    except:
+        global temperature, distance, light_intensity
+        close_connection()
+        temperature = 0
+        distance = 0
+        light_intensity = 0
 
 
 def get_led():

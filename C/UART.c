@@ -1,7 +1,6 @@
 #include<avr/io.h>
 #include<stdlib.h>
 #include<avr/sfr_defs.h>
-#include<avr/interrupt.h>
 #define F_CPU 16E6
 #define UBBRVAL 51
 
@@ -29,18 +28,3 @@ char recieve(void) {
 }
 
 
-ISR(USART_RX_vect)
-{
-    cli();
-    while(!(UCSR0A&(1<<RXC0))){};
-    // clear the USART interrupt
-	char recieved;
-    recieved = UDR0;
-
-	if (recieved == 0x31)
-	{
-		PORTD |= (1<<PD3);
-	}
-    sei();
-
-}

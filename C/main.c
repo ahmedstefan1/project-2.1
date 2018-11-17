@@ -216,3 +216,33 @@ ISR(PCINT0_vect) {
 		sei();
 	}
 }
+
+ISR(USART_RX_vect)
+{
+	cli();
+	while(!(UCSR0A&(1<<RXC0))){};
+	// clear the USART interrupt
+	char recieved;
+	recieved = UDR0;
+	char recieved1;
+	recieved1 = recieve();
+
+	if (recieved == 0x01)
+	{
+		PORTD |= (1<<PD3);
+		_delay_ms(1000);
+		if (recieved1 == 0x01)
+		{
+			PORTD |= (1<<PD6);
+			_delay_ms(1000);
+		}
+		else if (recieved1 == 0x02)
+		{
+			PORTD |= (1<<PD5);
+			_delay_ms(1000);
+		}
+	}
+	_delay_ms(100);
+	sei();
+
+}
