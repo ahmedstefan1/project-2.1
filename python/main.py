@@ -65,6 +65,14 @@ class Window:
         blinds_closed_label = Label(frame, text="Scherm is ingerold", bg="green")
         blinds_closed_label.grid(column=1, row=13, sticky="W")
 
+        # maakt textvak voor inkomende temperatuur
+        tekstvak = Text(frame, height=9, width=30)
+        tekstvak.grid(column=5, row=70, sticky="W,E")
+        tekstvak.insert(INSERT, "Waardes op dit moment: \n"
+                        "Temperatuur (\u00B0C): ", str(get_temp()), "\n"
+                        "Afstand (cm): ", str(get_distance()), "\n"
+                        "Licht (%): ", str(get_light()))
+
         # creates the dropdown menu for the comports selecter, if it needs  to be updated this does that too
         def dropdown_menu():
             global com_port
