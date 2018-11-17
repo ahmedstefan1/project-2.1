@@ -49,8 +49,21 @@ class Window:
         frame = Frame(root, width=width, height=height)
         frame.grid(column=0, row=0, rowspan=rows, columnspan=columns, sticky=(N, S, E, W))
 
-        connection_label = Label(frame, text="connection: Status")
-        connection_label.grid(column=1, row=8, sticky="E,W")
+        # maakt legenda voor LED-status
+        connection_label = Label(frame, text="Connection: Status")
+        connection_label.grid(column=1, row=8, sticky="W")
+
+        legenda_label = Label(frame, text="Legenda LED-status:")
+        legenda_label.grid(column=1, row=10, sticky="W")
+
+        blinds_open_label = Label(frame, text="Scherm is uitgerold", bg="red")
+        blinds_open_label.grid(column=1, row=11, sticky="W")
+
+        blinds_closing_label = Label(frame,text="Scherm wordt in- of uitgerold", bg="yellow")
+        blinds_closing_label.grid(column=1, row=12, sticky="W")
+
+        blinds_closed_label = Label(frame, text="Scherm is ingerold", bg="green")
+        blinds_closed_label.grid(column=1, row=13, sticky="W")
 
         # creates the dropdown menu for the comports selecter, if it needs  to be updated this does that too
         def dropdown_menu():
