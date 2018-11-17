@@ -1,9 +1,9 @@
 #define F_CPU 16E6
 
-#include <stdio.h>
-#include <avr/io.h>
-#include <util/delay.h>
-#include <avr/interrupt.h>
+#include<stdio.h>
+#include<avr/io.h>
+#include<util/delay.h>
+#include<avr/interrupt.h>
 #include "UART.h"
 #include "AVR_TTC_scheduler.h"
 
@@ -33,7 +33,6 @@ void init() {
 
 	PCICR = (1<<PCIE0);	// Enable PCINT[7:0] we use pin PB0 which is PCINT0
 	PCMSK0 = (1<<PCINT0);// set PB0 as intterupt port
-	sei();				// Enable Interrupts
 }
 
 
@@ -129,21 +128,33 @@ void getsensors()
 	}
 }
 
+void light1(){
+	PORTD |= (1<<PD3);
+	_delay_ms(1000);
+}
+void light2(){
+	PORTD &= ~(1<<PD3);
+}
+
 
 int main() {
 	// alle inits
 	uart_init();
 	init();
 	SCH_Init_T0();
-	unsigned char ultrasoon;
+	//unsigned char ultrasoon;
 	unsigned char run_sensors;
 	//unsigned char delayfunc;
 	//unsigned char ontvang;
+	unsigned char lichtaan;
+	unsigned char lightuit;
 
 	//voegt de task voor et uitlezen van de ultrasoon toe
 	run_sensors = SCH_Add_Task(getsensors,5,1000);
 	//delayfunc = SCH_Add_Task(delay,2,1000);
-	//ontvang = SCH_Add_Task(recieve,0,100);
+	//ontvang = SCH_Add_Task(recieve,2,100);
+	//lichtaan = SCH_Add_Task(light1,0,100);
+	//lightuit = SCH_Add_Task(light2,4,100);
 	SCH_Start();
 	while (1) {
 		SCH_Dispatch_Tasks();
