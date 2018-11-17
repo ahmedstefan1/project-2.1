@@ -78,6 +78,7 @@ def sendpacket(data=None):
     clean_queue()
     print(data)
     connection.write(data)
+    sleep(2)
     reset()
 
 
@@ -124,7 +125,7 @@ def get_distance():
 
 def end():
     global distance, light_intensity, temperature
-    distance = light_intensity  = 0
+    distance = light_intensity = 0
     temperature = 30
 
 
@@ -154,7 +155,7 @@ def protocol_understanding(data):
         elif type_data == b'2':
             distance = int(waarde, 16)
         elif type_data == b'4':
-            light_intensity = int(waarde, 16) / 255 *100
+            light_intensity = int(waarde, 16) / 255 * 100
         # elif type_data ==
             # print("type_data:" + str(int(waarde, 16)) + "eenheid")
 

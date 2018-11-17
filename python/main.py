@@ -5,13 +5,13 @@ from math import *
 
 
 def open_blinds():
-    close_blinds_command = bytes.fromhex("A01B0A")
-    add_task(sendpacket, args=(close_blinds_command,), priority=2)
+    open_blinds_command = bytes.fromhex("0102")
+    add_task(sendpacket, args=(open_blinds_command,), priority=2)
 
 
 def close_blinds():
-    open_blinds_command = bytes.fromhex("A0280A")
-    add_task(sendpacket, args=(open_blinds_command,), priority=2)
+    close_blinds_command = bytes.fromhex("0101")
+    add_task(sendpacket, args=(close_blinds_command,), priority=2)
 
 
 class Window:
@@ -68,20 +68,27 @@ class Window:
         # maakt textvak voor inkomende temperatuur
         tekstvak = Text(frame, height=9, width=30)
         tekstvak.grid(column=5, row=70, sticky="W,E")
+
         def update_tekstvak():
-            tekstvak.delete(CURRENT, END)
-            tekstvak.insert(INSERT, "Waardes op dit moment: \n"
-                            "Temperatuur (\u00B0C): ", str(get_temp()), "\n"
-                            "Afstand (cm): ", str(get_distance()),
-                            "\n"
-                            "Licht (%): ", str(get_light()))
+            tekstvak.delete(1.0, END)
+            temp = get_temp()
+            if temp is not None:
+                temp = temp - 30
+            distance1 = get_distance()
+            light = get_light()
+            if light is not None:
+                light = round(light, 1)
+            tekstvak.insert(INSERT, "Waardes op dit moment: \n" +
+                            "Temperatuur (\u00B0C): " + str(temp) + "\n"
+                            "Afstand (cm): " + str(distance1) + "\n" +
+                            "Licht (%): "+ str(light))
+            tekstvak.after(1000, update_tekstvak)
         tekstvak.insert(INSERT, "Waardes op dit moment: \n"
                         "Temperatuur (\u00B0C): ", str(get_temp()), "\n"
                         "Afstand (cm): ", str(get_distance()), "\n"
                         "Licht (%): ", str(get_light()))
 
         tekstvak.after(1000, update_tekstvak)
-
 
         # creates the dropdown menu for the comports selecter, if it needs  to be updated this does that too
         def dropdown_menu():
